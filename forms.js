@@ -2,14 +2,12 @@
 //	application.initForm.process();
 	
 	$.fn.validateIt = function(conf) {
-		console.log(conf);
-		var _Form = new Object();
+		var _Form = $(this);
 		var _Valid = true;
 		var _Tmp_value = new Array();
 		
 		$('.form').each(function () {
-			_Form = $(this);
-			$('.formSubmit',$(this)).click(function () {
+			$('.formSubmit',_Form).click(function () {
 				$('input:not([type=button]), .form select', _Form).each(function () {
 					var valid = true;
 					if ($(this).attr('data-form') != null) {
@@ -78,8 +76,8 @@
 				}
 			}
 		});
-	}
+	};
 	
-	$(document).validateIt()
+	$(document).validateIt();
 });
 
