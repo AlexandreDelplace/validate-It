@@ -4,7 +4,6 @@ var validator = {
     _Message: "",
     _Valid: true,
     _Functions: [],
-    
     _Messages: new Array(),
     _Conf: new Array(),
     init: function() {
@@ -21,14 +20,17 @@ var validator = {
         this._Conf["mismatch"] = new Array();
     },
     clone: function(name) {
-        var obj = $.extend(true,{}, validator);
+        var obj = $.extend(true, {}, validator);
         obj._Name = name;
         obj.init();
         return obj;
     },
-    process: function() {
+    reset: function() {
         this._Message = "";
         this._Valid = true;
+    },
+    process: function() {
+        this.reset();
         for (var x in this._Functions) {
             eval('this.' + this._Functions[x])(this);
             if (!this._Valid)
