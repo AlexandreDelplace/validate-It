@@ -9,8 +9,8 @@
         $('.form').each(function() {
             _Form = $(this);
             $('.formSubmit', $(this)).click(function() {
+                var _Valid = true;
                 $('input:not([type=button]), .form select, textarea, .checkList', _Form).each(function() {
-                    var _Valid = true;
                     var valid = true;
                     if ($(this).attr('data-form') != null) {
                         var el = $(this);
@@ -25,7 +25,6 @@
                                             el.removeClass('error');
                                         }
                                         if ($(this).hasClass("checkList")) {
-                                            console.log($(this));
                                             obj._Value = new Array();
                                             $('input[type=checkbox]', $(this)).filter(function() {
                                                 return this.checked
@@ -60,11 +59,13 @@
                         }
                     }
                 });
-                if (_Valid)
-                    _Form.submit();
+                if (_Valid) {
+                    console.log(vi_submit);
+                    vi_submit.process(_Form);
+                }
             });
         });
-        
+
         function onChange() {
             var valid = true;
             if ($(this).attr('data-form') != null) {
@@ -103,26 +104,34 @@
                     }
                 }
             }
-        };
-        
+        }
+        ;
+
         $('input:not([type=button]), select, textarea, .checkList', _Form).on('onBlur keyup', onChange);
         $('.checkList', _Form).on('click', onChange);
     };
-    
+
 
     var validatorCreation = function(param) {
         for (var name in param) {
-            window["vi_" + name] = validator.clone(name);
-            var obj = window["vi_" + name];
-            for (var fct in param[name]) {
-                if (fct == "test") {
-                    obj.requireOptionalTest = param[name][fct];
-                } else {
-                    obj._Functions.push("require" + fct[0].toUpperCase() + fct.slice(1));
-                    if (param[name][fct].message != undefined)
-                        obj._Messages[fct] = param[name][fct].message;
-                    if (param[name][fct].conf != undefined)
-                        obj._Conf[fct] = param[name][fct].conf;
+            if (name == "submit") {
+                vi_submit.process = param[name];
+            } else {
+                window["vi_" + name] = validator.clone(name);
+                var obj = window["vi_" + name];
+                for (var fct in param[name]) {
+                    switch (fct) {
+                        case "test" :
+                            obj.requireOptionalTest = param[name][fct];
+                            break;
+                        default :
+                            obj._Functions.push("require" + fct[0].toUpperCase() + fct.slice(1));
+                            if (param[name][fct].message != undefined)
+                                obj._Messages[fct] = param[name][fct].message;
+                            if (param[name][fct].conf != undefined)
+                                obj._Conf[fct] = param[name][fct].conf;
+                            break;
+                    }
                 }
             }
         }
@@ -154,6 +163,9 @@
                 }
 
             }
+        },
+        submit: function(form) {
+            console.log(form);
         }
     });
 
