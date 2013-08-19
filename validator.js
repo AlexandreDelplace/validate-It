@@ -128,5 +128,5 @@ vi_passwordConfirm._Functions = ['requireEquality'];
 
 var vi_submit = new Object();
 vi_submit.process = function(form) {
-    alert('lol');
+    form.submit();      // Default
 };

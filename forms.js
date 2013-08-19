@@ -107,7 +107,7 @@
         }
         ;
 
-        $('input:not([type=button]), select, textarea, .checkList', _Form).on('onBlur keyup', onChange);
+        $('input:not([type=button]), select, textarea', _Form).on('onBlur keyup', onChange);
         $('.checkList', _Form).on('click', onChange);
     };
 
