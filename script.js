@@ -26,10 +26,16 @@
 
 	    }
 	},
+	group: {
+	    test: function(self) {
+		console.log(self);
+		console.log(self._Value);
+	    }
+	},
 	submit: function(form) {
 	    console.log(form);
 	}
     });
-    
+
     $('.form2').validateIt();
 });

@@ -24,11 +24,14 @@
 				el.next().remove();
 				el.removeClass('error');
 			    }
-			    if ($(this).hasClass("checkList")) {
+			    if ($(this).hasClass("groupValidator")) {
 				obj._Value = new Array();
 				$('input[type=checkbox]', $(this)).filter(function() {
 				    return this.checked
 				}).each(function() {
+				    obj._Value.push($(this).val());
+				});
+				$('input:not([type=checkbox])', $(this)).each(function() {
 				    obj._Value.push($(this).val());
 				});
 				obj.reset();
@@ -67,35 +70,36 @@
 		$('.formSubmit', _Form).trigger('click');
 	    } else {
 		var valid = true;
-		if ($(this).attr('data-form') != null) {
-		    var el = $(this);
-		    var data = el.attr('data-form').split(" ");
-		    for (var x in data) {
-			var obj = window["vi_" + data[x].replace(/^\s+|\s+$/g, '')];
-			if (valid && data[x] != "passwordConfirm" && typeof obj == "object" && typeof obj.process == "function") {
-			    if (el.hasClass('error')) {
-				el.next().remove();
-				el.removeClass('error');
-			    }
-			    if ($(this).hasClass("checkList")) {
-				obj._Value = new Array();
-				$('input[type=checkbox]', $(this)).filter(function() {
-				    return this.checked
-				}).each(function() {
-				    obj._Value.push($(this).val());
-				});
-				obj.reset();
-				obj.requireOptionalTest(obj);
-			    } else {
-				obj._Value = el.val().replace(/^\s+|\s+$/g, '');
-				obj.process();
-			    }
-			    if (!obj._Valid) {
-				valid = false;
-				_Valid = false;
-				el.addClass('error');
-				el.after('<small class="error">' + obj._Message + '</small>');
-			    }
+		var el = ($(this).attr('data-form') !== undefined) ? $(this) : $(this).parent('.groupValidator');
+		var data = el.attr('data-form').split(" ");
+		for (var x in data) {
+		    var obj = window["vi_" + data[x].replace(/^\s+|\s+$/g, '')];
+		    if (valid && data[x] != "passwordConfirm" && typeof obj == "object" && typeof obj.process == "function") {
+			if (el.hasClass('error')) {
+			    el.next().remove();
+			    el.removeClass('error');
+			}
+			if (el.hasClass("groupValidator")) {
+			    obj._Value = new Array();
+			    $('input[type=checkbox]', el).filter(function() {
+				return this.checked
+			    }).each(function() {
+				obj._Value.push($(this).val());
+			    });
+			    $('input:not([type=checkbox])', el).each(function() {
+				obj._Value.push($(this).val());
+			    });
+			    obj.reset();
+			    obj.requireOptionalTest(obj);
+			} else {
+			    obj._Value = el.val().replace(/^\s+|\s+$/g, '');
+			    obj.process();
+			}
+			if (!obj._Valid) {
+			    valid = false;
+			    _Valid = false;
+			    el.addClass('error');
+			    el.after('<small class="error">' + obj._Message + '</small>');
 			}
 		    }
 		}
@@ -103,8 +107,11 @@
 	}
 	;
 
-	$('input:not([type=button]), select, textarea', _Form).on('onBlur keyup change', onChange);
-	$('.checkList', _Form).on('click', onChange);
+	$('input:not([type=button]), select, textarea', _Form).filter(function() {
+	    return $(this).attr('data-form') !== undefined;
+	}).on('keyup change', onChange);
+	$('.groupValidator input[type=checkbox]', _Form).on('click', onChange);
+	$('.groupValidator input:not([type=checkbox])', _Form).on('keyup change', onChange);
     };
 
     var validatorCreation = function(param, _Submit) {
