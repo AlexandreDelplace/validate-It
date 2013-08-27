@@ -37,5 +37,9 @@
 	}
     });
 
-    $('.form2').validateIt();
+    $('.form2').validateIt({
+	submit : function(form) {
+	    console.log(form);
+	}
+    });
 });

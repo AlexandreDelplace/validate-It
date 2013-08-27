@@ -5,6 +5,7 @@
 	var _Tmp_value = new Array();
 	var _Submit = new Object();
 	_Submit.process = function(_Form) {
+	    _Form.unbind();
 	    _Form.submit();
 	};
 
@@ -62,6 +63,10 @@
 	    });
 	    if (_Valid) {
 		_Submit.process(_Form);
+	    } else {
+		_Form.on("submit", function(e) {
+		    e.preventDefault();
+		});
 	    }
 	});
 
@@ -112,6 +117,9 @@
 	}).on('keyup change', onChange);
 	$('.groupValidator input[type=checkbox]', _Form).on('click', onChange);
 	$('.groupValidator input:not([type=checkbox])', _Form).on('keyup change', onChange);
+	_Form.on("submit", function(e) {
+	    e.preventDefault();
+	});
     };
 
     var validatorCreation = function(param, _Submit) {
